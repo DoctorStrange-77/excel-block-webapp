@@ -3,11 +3,23 @@ import { Exercise } from "@/types/training";
 import { VolumeBar } from "@/components/VolumeBar";
 import { TrainingGrid } from "@/components/TrainingGrid";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import SplitDialog from "@/components/SplitDialog";
+import SaveSplitDialog from "@/components/SaveSplitDialog";
+import ResetConfirmDialog from "@/components/ResetConfirmDialog";
+import CenteredAlertDialog from "@/components/CenteredAlertDialog";
+import DeleteSplitConfirmDialog from "@/components/DeleteSplitConfirmDialog";
 
 const Index = () => {
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [isSplitDialogOpen, setIsSplitDialogOpen] = useState(false);
+  const [numDays, setNumDays] = useState<number>(7);
+  const [notes, setNotes] = useState<Record<number, string>>({});
+  const [currentSplitName, setCurrentSplitName] = useState<string>("");
 
+  // build volume data but exclude 'ATTIVAZIONE' exercises from the chart
   const volumeData = exercises.reduce((acc, exercise) => {
+    if ((exercise.muscleGroup || '').toUpperCase() === 'ATTIVAZIONE') return acc;
     acc[exercise.muscleGroup] = (acc[exercise.muscleGroup] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -26,36 +38,179 @@ const Index = () => {
     toast.success("Esercizio eliminato");
   };
 
+  const handleUpdateExercise = (exercise: Exercise) => {
+    setExercises((prev) => prev.map((ex) => (ex.id === exercise.id ? exercise : ex)));
+    toast.success("Esercizio aggiornato");
+  };
+
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+
   const handleReset = () => {
-    if (confirm("Sei sicuro di voler resettare tutti gli esercizi?")) {
-      setExercises([]);
-      toast.success("Blocco resettato");
+    setIsResetDialogOpen(true);
+  };
+
+  const handleDoReset = () => {
+    setExercises([]);
+    toast.success("Blocco resettato");
+  };
+
+  const handleSaveSplit = () => {
+    // open the styled save dialog instead
+    setIsSaveDialogOpen(true);
+  };
+
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+
+  const handleDoSave = (name: string) => {
+    const key = name.trim() || `split-${new Date().toISOString()}`;
+    try {
+      const stored = JSON.parse(localStorage.getItem("savedSplits" ) || "{}");
+      if (stored[key]) {
+        // show centered dialog instead of toast
+        setAlertMessage("Nome split già presente. Inserisci un nome diverso.");
+        setIsAlertOpen(true);
+        return false;
+      }
+      stored[key] = { savedAt: Date.now(), exercises, notes, numDays };
+      localStorage.setItem("savedSplits", JSON.stringify(stored));
+      toast.success(`Split salvato come: ${key}`);
+      setCurrentSplitName(key);
+      return true;
+    } catch (e) {
+      console.error(e);
+      toast.error("Impossibile salvare lo split");
+      return false;
     }
+  };
+
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
+  const handleOpenSplitDialog = () => {
+    setIsSplitDialogOpen(true);
+  };
+
+  const handleDeleteCurrentSplit = () => {
+    const key = currentSplitName.trim();
+    if (!key) {
+      toast.error("Nessun split selezionato");
+      return;
+    }
+    try {
+      const stored = JSON.parse(localStorage.getItem("savedSplits") || "{}");
+      if (!stored[key]) {
+        toast.error("Split non trovato");
+        return;
+      }
+      delete stored[key];
+      localStorage.setItem("savedSplits", JSON.stringify(stored));
+      toast.success(`Split cancellato: ${key}`);
+      setCurrentSplitName("");
+      // if dialog open, refresh/close
+      setIsSplitDialogOpen(false);
+      setIsDeleteDialogOpen(false);
+    } catch (e) {
+      console.error(e);
+      toast.error("Impossibile cancellare lo split");
+    }
+  };
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const handleRestoreSplit = (payload: { name?: string; exercises: Exercise[]; notes?: Record<number,string>; numDays?: number; }) => {
+    setExercises(payload.exercises || []);
+    if (payload.notes) setNotes(payload.notes);
+    if (payload.numDays) setNumDays(payload.numDays);
+    if (payload.name) setCurrentSplitName(payload.name);
+    toast.success("Split caricato");
   };
 
   return (
     <div className="min-h-screen bg-background p-4">
       {/* Intestazione in alto */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-primary mb-2">BLOCCO ALLENAMENTO</h1>
-        <p className="text-muted-foreground text-sm">
-          Sistema di programmazione settimanale
-        </p>
+      <div className="mb-6 flex items-center gap-4">
+  <h1 className="text-6xl font-bold text-primary mb-0">SPLIT</h1>
+
+        <div className="flex items-center gap-3">
+          <label className="text-sm">W.O. Settimanali</label>
+          <select
+            aria-label="W.O. Settimanali"
+            value={numDays}
+            onChange={(e) => setNumDays(Number(e.target.value))}
+            className="bg-black text-primary font-bold text-base px-3 py-2 rounded"
+            style={{ height: 'auto' }}
+          >
+            {Array.from({ length: 7 }, (_, i) => i + 1).map((n) => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex gap-2">
+          <Button size="sm" variant="default" onClick={handleReset} className="h-9 px-3 rounded-md border border-yellow-400 font-bold">
+            RESET
+          </Button>
+          <Button size="sm" variant="default" onClick={handleSaveSplit} className="h-9 px-3 rounded-md border border-yellow-400 font-bold">
+            SALVA SPLIT
+          </Button>
+          <Button size="sm" variant="default" onClick={handleOpenSplitDialog} className="h-9 px-3 rounded-md border border-yellow-400 font-bold">
+            APRI SPLIT
+          </Button>
+          <Button size="sm" variant="destructive" className="h-9 px-3 rounded-md border border-yellow-400 font-bold"
+            onClick={() => setIsDeleteDialogOpen(true)}
+          >
+            CANCELLA SPLIT
+          </Button>
+        </div>
+        {/* Current split name textbox (shows saved name or editable) */}
+        <div className="ml-6 w-1/3">
+          <input
+            value={currentSplitName}
+            onChange={(e) => setCurrentSplitName(e.target.value)}
+            placeholder="Nome split corrente"
+            className="w-full bg-black placeholder:text-white/60 text-primary px-3 py-2 rounded border-2 border-primary text-center font-bold uppercase text-3xl"
+            aria-label="Nome split corrente"
+          />
+        </div>
       </div>
 
-      {/* Contenuto principale */}
-      <div className="flex flex-col gap-4">
-        <TrainingGrid
-          exercises={exercises}
-          onAddExercise={handleAddExercise}
-          onDeleteExercise={handleDeleteExercise}
-          onReset={handleReset}
-        />
+      <SplitDialog
+        open={isSplitDialogOpen}
+        onOpenChange={setIsSplitDialogOpen}
+        onRestore={handleRestoreSplit}
+        currentExercises={exercises}
+        currentNotes={notes}
+        currentNumDays={numDays}
+      />
 
-        {/* Grafico volume in basso - mostra solo gruppi muscolari usati */}
-        {Object.keys(volumeData).length > 0 && (
-          <VolumeBar data={volumeData} />
-        )}
+      <SaveSplitDialog open={isSaveDialogOpen} onOpenChange={setIsSaveDialogOpen} onSave={handleDoSave} />
+  <ResetConfirmDialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen} onConfirm={handleDoReset} />
+        <CenteredAlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen} message={alertMessage} />
+        <DeleteSplitConfirmDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} onConfirm={handleDeleteCurrentSplit} />
+
+      {/* Contenuto principale: shared scroll container so VolumeBar and TrainingGrid align */}
+      <div className="flex flex-col gap-4">
+        <div className="mt-6 overflow-x-auto">
+          <div className="inline-block min-w-full">
+            {Object.keys(volumeData).length > 0 && (
+              <div className="mb-6">
+                <VolumeBar data={volumeData} numDays={numDays} />
+              </div>
+            )}
+
+            <TrainingGrid
+              exercises={exercises}
+              onAddExercise={handleAddExercise}
+              onDeleteExercise={handleDeleteExercise}
+              onUpdateExercise={handleUpdateExercise}
+              onReset={handleReset}
+              numDays={numDays}
+              notes={notes}
+              onNoteChange={(day, text) => setNotes((prev) => ({ ...prev, [day]: text }))}
+              noScrollContainer
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
