@@ -9,6 +9,7 @@ import SaveSplitDialog from "@/components/SaveSplitDialog";
 import ResetConfirmDialog from "@/components/ResetConfirmDialog";
 import CenteredAlertDialog from "@/components/CenteredAlertDialog";
 import DeleteSplitConfirmDialog from "@/components/DeleteSplitConfirmDialog";
+import ConfirmOverwriteDialog from "@/components/ConfirmOverwriteDialog";
 
 const Index = () => {
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -51,6 +52,10 @@ const Index = () => {
 
   const handleDoReset = () => {
     setExercises([]);
+    setNotes({});
+    setCurrentSplitName("");
+    setNumDays(7);
+    setIsResetDialogOpen(false);
     toast.success("Blocco resettato");
   };
 
@@ -116,6 +121,7 @@ const Index = () => {
   };
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isOverwriteConfirmOpen, setIsOverwriteConfirmOpen] = useState(false);
 
   const handleRestoreSplit = (payload: { name?: string; exercises: Exercise[]; notes?: Record<number,string>; numDays?: number; }) => {
     setExercises(payload.exercises || []);
@@ -123,6 +129,20 @@ const Index = () => {
     if (payload.numDays) setNumDays(payload.numDays);
     if (payload.name) setCurrentSplitName(payload.name);
     toast.success("Split caricato");
+  };
+
+  const handleConfirmOverwrite = () => {
+    const key = currentSplitName.trim();
+    if (!key) return;
+    try {
+      const stored = JSON.parse(localStorage.getItem("savedSplits") || "{}");
+      stored[key] = { savedAt: Date.now(), exercises, notes, numDays };
+      localStorage.setItem("savedSplits", JSON.stringify(stored));
+      toast.success(`Split aggiornato: ${key}`);
+    } catch (e) {
+      console.error(e);
+      toast.error("Impossibile salvare le modifiche allo split");
+    }
   };
 
   return (
@@ -150,11 +170,28 @@ const Index = () => {
           <Button size="sm" variant="default" onClick={handleReset} className="h-9 px-3 rounded-md border border-yellow-400 font-bold">
             RESET
           </Button>
-          <Button size="sm" variant="default" onClick={handleSaveSplit} className="h-9 px-3 rounded-md border border-yellow-400 font-bold">
-            SALVA SPLIT
-          </Button>
           <Button size="sm" variant="default" onClick={handleOpenSplitDialog} className="h-9 px-3 rounded-md border border-yellow-400 font-bold">
             APRI SPLIT
+          </Button>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="h-9 px-3 rounded-md border border-yellow-400 font-bold"
+            onClick={() => {
+              const key = currentSplitName.trim();
+              if (!key) {
+                toast.error("Nessuno split aperto da salvare. Apri uno split o usa 'SALVA SPLIT'");
+                return;
+              }
+              setIsOverwriteConfirmOpen(true);
+            }}
+            disabled={!currentSplitName}
+            aria-disabled={!currentSplitName}
+          >
+            SALVA MODIFICA
+          </Button>
+          <Button size="sm" variant="default" onClick={handleSaveSplit} className="h-9 px-3 rounded-md border border-yellow-400 font-bold">
+            SALVA SPLIT
           </Button>
           <Button size="sm" variant="destructive" className="h-9 px-3 rounded-md border border-yellow-400 font-bold"
             onClick={() => setIsDeleteDialogOpen(true)}
@@ -186,7 +223,8 @@ const Index = () => {
       <SaveSplitDialog open={isSaveDialogOpen} onOpenChange={setIsSaveDialogOpen} onSave={handleDoSave} />
   <ResetConfirmDialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen} onConfirm={handleDoReset} />
         <CenteredAlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen} message={alertMessage} />
-        <DeleteSplitConfirmDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} onConfirm={handleDeleteCurrentSplit} />
+  <DeleteSplitConfirmDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} onConfirm={handleDeleteCurrentSplit} />
+  <ConfirmOverwriteDialog open={isOverwriteConfirmOpen} onOpenChange={setIsOverwriteConfirmOpen} onConfirm={handleConfirmOverwrite} splitName={currentSplitName} />
 
       {/* Contenuto principale: shared scroll container so VolumeBar and TrainingGrid align */}
       <div className="flex flex-col gap-4">
