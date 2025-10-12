@@ -46,35 +46,7 @@ export const TrainingGrid = ({
       </div>
 
       <div className="inline-block min-w-full">
-        <div className="grid grid-cols-[repeat(7,minmax(300px,1fr))] gap-1">
-          {/* Headers */}
-          {Array.from({ length: DAYS }, (_, i) => (
-            <div
-              key={`header-${i}`}
-              className="bg-primary text-primary-foreground font-bold text-center py-3 text-sm"
-            >
-              DAY - {i + 1}
-            </div>
-          ))}
-
-          {/* Subheaders */}
-          {Array.from({ length: DAYS }, (_, i) => (
-            <div
-              key={`subheader-${i}`}
-              className="grid grid-cols-3 gap-px bg-border"
-            >
-              <div className="bg-card text-foreground text-[10px] font-semibold p-2 text-center">
-                TIPO ESERCIZIO
-              </div>
-              <div className="bg-card text-foreground text-[10px] font-semibold p-2 text-center">
-                STIMOLO - TECNICA PROGRESSIONE
-              </div>
-              <div className="bg-card text-foreground text-[10px] font-semibold p-2 text-center">
-                INCREMENTO SETTIMANA
-              </div>
-            </div>
-          ))}
-
+        <div className="grid grid-cols-[repeat(7,minmax(300px,1fr))] gap-2">
           {/* Exercise cells */}
           {Array.from({ length: DAYS }, (_, dayIndex) => {
             const dayExercises = exercises.filter((ex) => ex.day === dayIndex + 1);

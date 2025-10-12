@@ -31,7 +31,12 @@ export const ExerciseCell = ({
   };
 
   return (
-    <div className="bg-card border border-border min-h-[200px] p-2 space-y-2">
+    <div className="bg-card border border-border rounded-sm min-h-[300px] p-3 space-y-2">
+      {/* Header del giorno */}
+      <div className="bg-primary text-primary-foreground font-bold text-center py-2 px-3 rounded-sm mb-3 -mx-3 -mt-3">
+        DAY - {day}
+      </div>
+      
       {exercises.map((exercise) => (
         <div
           key={exercise.id}
