@@ -57,6 +57,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        femorali: "hsl(var(--femorali))",
+        bicipiti: "hsl(var(--bicipiti))",
+        deltoide: "hsl(var(--deltoide))",
+        dorso: "hsl(var(--dorso))",
+        spalle: "hsl(var(--spalle))",
+        obliqui: "hsl(var(--obliqui))",
       },
       borderRadius: {
         lg: "var(--radius)",
