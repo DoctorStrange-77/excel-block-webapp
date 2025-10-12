@@ -30,13 +30,7 @@ export const TrainingGrid = ({
           RESET
         </Button>
         {/* 'APRI MASCHERE' button removed as requested */}
-        <Button
-          variant="secondary"
-          size="sm"
-          className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
-        >
-          INALAZIONE
-        </Button>
+        {/* 'INALAZIONE' button removed as requested */}
       </div>
 
       <div className="inline-block min-w-full">
