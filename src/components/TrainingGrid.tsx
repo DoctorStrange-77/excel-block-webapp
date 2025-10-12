@@ -29,13 +29,7 @@ export const TrainingGrid = ({
         >
           RESET
         </Button>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
-        >
-          APRI MASCHERE
-        </Button>
+        {/* 'APRI MASCHERE' button removed as requested */}
         <Button
           variant="secondary"
           size="sm"
