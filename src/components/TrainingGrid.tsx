@@ -27,12 +27,18 @@ export const TrainingGrid = ({
   noScrollContainer = false,
 }: TrainingGridProps) => {
   const DAYS = numDays;
+  const gridStyle = {
+    display: 'grid',
+    gridTemplateColumns: `repeat(${DAYS}, 300px)`,
+    gap: '0.5rem',
+  };
+  
   if (noScrollContainer) {
     return (
       <>
         <div className="mb-4 flex gap-2" />
-        <div className="inline-block min-w-full">
-          <div className="grid grid-cols-[repeat(7,minmax(300px,1fr))] gap-2">
+        <div className="inline-block">
+          <div style={gridStyle}>
             {/* Exercise cells */}
             {Array.from({ length: DAYS }, (_, dayIndex) => {
               const dayExercises = exercises.filter((ex) => ex.day === dayIndex + 1);
@@ -59,8 +65,8 @@ export const TrainingGrid = ({
     <div className="flex-1 overflow-x-auto">
       <div className="mb-4 flex gap-2" />
 
-      <div className="inline-block min-w-full">
-        <div className="grid grid-cols-[repeat(7,minmax(300px,1fr))] gap-2">
+      <div className="inline-block">
+        <div style={gridStyle}>
           {/* Exercise cells */}
           {Array.from({ length: DAYS }, (_, dayIndex) => {
             const dayExercises = exercises.filter((ex) => ex.day === dayIndex + 1);

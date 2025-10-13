@@ -145,85 +145,91 @@ const Index = () => {
     }
   };
 
+  // Calculate dynamic width for aligned elements
+  const gapSize = 8; // 0.5rem = 8px
+  const alignedWidth = numDays * 300 + (numDays - 1) * gapSize;
+
   return (
     <div className="min-h-screen bg-background p-6">
       {/* Header professionale */}
-      <div className="mb-8 bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4 shadow-lg">
-        <div className="flex items-center justify-between gap-4">
-          {/* Sezione sinistra: titolo e dropdown */}
-          <div className="flex items-center gap-6">
-            <h1 className="text-5xl font-black text-primary tracking-tight">SPLIT</h1>
-            <div className="flex items-center gap-3 bg-background/80 px-4 py-2 rounded-md border border-border">
-              <label className="text-sm font-medium text-muted-foreground whitespace-nowrap">W.O. Settimanali</label>
-              <select
-                aria-label="W.O. Settimanali"
-                value={numDays}
-                onChange={(e) => setNumDays(Number(e.target.value))}
-                className="bg-card text-primary font-bold text-lg px-3 py-1.5 rounded-md border border-primary/30 hover:border-primary transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50"
+      <div className="mb-8">
+        <div className="flex items-start gap-6 mb-4">
+          {/* Sezione sinistra: titolo, dropdown e pulsanti */}
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-6">
+              <h1 className="text-5xl font-black text-primary tracking-tight">SPLIT</h1>
+              <div className="flex items-center gap-3 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-md border border-border">
+                <label className="text-sm font-medium text-muted-foreground whitespace-nowrap">W.O. Settimanali</label>
+                <select
+                  aria-label="W.O. Settimanali"
+                  value={numDays}
+                  onChange={(e) => setNumDays(Number(e.target.value))}
+                  className="bg-card text-primary font-bold text-lg px-3 py-1.5 rounded-md border border-primary/30 hover:border-primary transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  {Array.from({ length: 7 }, (_, i) => i + 1).map((n) => (
+                    <option key={n} value={n}>{n}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            
+            {/* Pulsanti azioni */}
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                onClick={handleReset} 
+                className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
               >
-                {Array.from({ length: 7 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>{n}</option>
-                ))}
-              </select>
+                RESET
+              </Button>
+              <Button 
+                size="sm" 
+                onClick={handleOpenSplitDialog} 
+                className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
+              >
+                APRI SPLIT
+              </Button>
+              <Button
+                size="sm"
+                className="h-9 px-4 bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold shadow-md transition-all hover:shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                onClick={() => {
+                  const key = currentSplitName.trim();
+                  if (!key) {
+                    toast.error("Nessuno split aperto da salvare. Apri uno split o usa 'SALVA SPLIT'");
+                    return;
+                  }
+                  setIsOverwriteConfirmOpen(true);
+                }}
+                disabled={!currentSplitName}
+                aria-disabled={!currentSplitName}
+              >
+                SALVA MODIFICA
+              </Button>
+              <Button 
+                size="sm" 
+                onClick={handleSaveSplit} 
+                className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
+              >
+                SALVA SPLIT
+              </Button>
+              <Button 
+                size="sm" 
+                variant="destructive" 
+                className="h-9 px-4 font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
+                CANCELLA SPLIT
+              </Button>
             </div>
           </div>
 
-          {/* Sezione centrale: pulsanti azioni */}
-          <div className="flex gap-2">
-            <Button 
-              size="sm" 
-              onClick={handleReset} 
-              className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
-            >
-              RESET
-            </Button>
-            <Button 
-              size="sm" 
-              onClick={handleOpenSplitDialog} 
-              className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
-            >
-              APRI SPLIT
-            </Button>
-            <Button
-              size="sm"
-              className="h-9 px-4 bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold shadow-md transition-all hover:shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
-              onClick={() => {
-                const key = currentSplitName.trim();
-                if (!key) {
-                  toast.error("Nessuno split aperto da salvare. Apri uno split o usa 'SALVA SPLIT'");
-                  return;
-                }
-                setIsOverwriteConfirmOpen(true);
-              }}
-              disabled={!currentSplitName}
-              aria-disabled={!currentSplitName}
-            >
-              SALVA MODIFICA
-            </Button>
-            <Button 
-              size="sm" 
-              onClick={handleSaveSplit} 
-              className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
-            >
-              SALVA SPLIT
-            </Button>
-            <Button 
-              size="sm" 
-              variant="destructive" 
-              className="h-9 px-4 font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
-              onClick={() => setIsDeleteDialogOpen(true)}
-            >
-              CANCELLA SPLIT
-            </Button>
-          </div>
-
-          {/* Sezione destra: nome split corrente */}
-          <div className="flex-1 max-w-md">
+          {/* Campo nome split allineato con i giorni */}
+          <div style={{ width: `${alignedWidth}px` }}>
             <input
               value={currentSplitName}
               onChange={(e) => setCurrentSplitName(e.target.value)}
               placeholder="NOME SPLIT CORRENTE"
-              className="w-full bg-background/80 placeholder:text-muted-foreground text-primary px-4 py-2.5 rounded-md border-2 border-primary/40 hover:border-primary/60 focus:border-primary text-center font-bold uppercase text-xl tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full bg-card/50 backdrop-blur-sm placeholder:text-muted-foreground text-primary px-4 py-2.5 rounded-md border-2 border-primary/40 hover:border-primary/60 focus:border-primary text-center font-bold uppercase text-xl tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
               aria-label="Nome split corrente"
             />
           </div>

@@ -65,10 +65,11 @@ export const VolumeBar = ({ data, numDays }: VolumeBarProps) => {
     return shortLabel(full);
   };
 
+  // Calculate width to match TrainingGrid: numDays * 300px + gaps
   const containerStyle: React.CSSProperties = {};
   if (numDays && numDays > 0) {
-    // match approx width of day columns (min 300px each in TrainingGrid)
-    containerStyle.width = `${numDays * 300}px`;
+    const gapSize = 8; // 0.5rem = 8px
+    containerStyle.width = `${numDays * 300 + (numDays - 1) * gapSize}px`;
   }
 
   return (
