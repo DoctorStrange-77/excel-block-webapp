@@ -72,32 +72,32 @@ export const VolumeBar = ({ data, numDays }: VolumeBarProps) => {
   }
 
   return (
-    <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg px-6 py-6 max-w-full shadow-lg" style={containerStyle}>
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-foreground font-black text-2xl tracking-tight">VOLUME PER DISTRETTO MUSCOLARE</h3>
-        <div className="text-sm text-muted-foreground font-medium">
-          Totale esercizi: <span className="text-primary font-bold">{Object.values(data).reduce((a, b) => a + b, 0)}</span>
+    <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg px-4 py-3 max-w-full shadow-lg" style={containerStyle}>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-foreground font-bold text-sm tracking-tight">VOLUME PER DISTRETTO MUSCOLARE</h3>
+        <div className="text-xs text-muted-foreground font-medium">
+          Totale: <span className="text-primary font-bold">{Object.values(data).reduce((a, b) => a + b, 0)}</span>
         </div>
       </div>
       <div className="w-full overflow-x-auto">
-        <div className="relative bg-background/30 rounded-md p-4" style={{ minHeight: 360 }}>
+        <div className="relative bg-background/30 rounded-md p-2" style={{ minHeight: 180 }}>
           {/* Grid di riferimento orizzontale */}
-          {[0, 25, 50, 75, 100].map((percent) => (
+          {[0, 50, 100].map((percent) => (
             <div 
               key={percent}
               className="absolute left-0 right-0 border-t border-muted-foreground/10"
-              style={{ bottom: `${72 + (240 * percent / 100)}px` }}
+              style={{ bottom: `${40 + (120 * percent / 100)}px` }}
             >
-              <span className="absolute -left-8 -top-2 text-xs text-muted-foreground/60 font-mono">
+              <span className="absolute -left-6 -top-2 text-[10px] text-muted-foreground/60 font-mono">
                 {Math.round((maxVolume * percent) / 100)}
               </span>
             </div>
           ))}
 
-          <div className="flex items-end justify-around space-x-4 px-2" style={{ height: 240 }}>
+          <div className="flex items-end justify-around space-x-2 px-2" style={{ height: 120 }}>
             {usedFamilies.map((family) => (
-              <div key={family.label} className="flex flex-col items-center group" style={{ width: 120, height: 240 }}>
-                <div className="relative w-full h-full rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-border/50">
+              <div key={family.label} className="flex flex-col items-center group" style={{ width: 50, height: 120 }}>
+                <div className="relative w-full h-full rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-border/50">
                   {/* stacked segments con gradiente */}
                   {(() => {
                     let cum = 0;
@@ -123,35 +123,17 @@ export const VolumeBar = ({ data, numDays }: VolumeBarProps) => {
                   })()}
 
                   {/* Badge con valore in basso */}
-                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
-                    <div className="bg-background/90 backdrop-blur-sm text-primary font-black text-lg px-3 py-1 rounded-full border-2 border-primary/50 shadow-lg">
+                  <div className="absolute bottom-1 left-1/2 -translate-x-1/2">
+                    <div className="bg-background/90 backdrop-blur-sm text-primary font-bold text-xs px-1.5 py-0.5 rounded border border-primary/50 shadow-sm">
                       {family.total}
                     </div>
                   </div>
-
-                  {/* Legenda migliorata per famiglie multi-segmento */}
-                  {family.children.length > 1 && (
-                    <div className="absolute top-2 right-2 bg-background/95 backdrop-blur-sm rounded-md p-2 text-[9px] max-h-32 overflow-auto shadow-md border border-border/50" style={{ maxWidth: 160 }}>
-                      {family.children.map((c) => (
-                        <div key={c.name} className="flex items-center gap-1.5 mb-1 last:mb-0">
-                          <span 
-                            className="inline-block w-2.5 h-2.5 rounded-full shadow-sm" 
-                            style={{ backgroundColor: `hsl(var(--${c.color}))` }} 
-                          />
-                          <span className="font-bold truncate text-foreground" style={{ maxWidth: 90 }}>
-                            {segmentDisplayName(family.label, c.name)}
-                          </span>
-                          <span className="font-mono text-muted-foreground ml-auto">{c.volume}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
 
                 {/* Etichetta famiglia */}
-                <div className="mt-4 text-center">
+                <div className="mt-2 text-center">
                   <span 
-                    className="block text-xs font-black text-foreground/90 leading-tight tracking-wide px-2 py-1 rounded-md bg-background/50 group-hover:bg-primary/10 transition-colors" 
+                    className="block text-[10px] font-bold text-foreground/90 leading-tight tracking-wide" 
                     title={family.label}
                   >
                     {family.label}
