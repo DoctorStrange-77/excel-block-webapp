@@ -150,149 +150,89 @@ const Index = () => {
   const alignedWidth = numDays * 300 + (numDays - 1) * gapSize;
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      {/* Header Principale */}
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">Gestione Schede</h1>
-        <p className="text-muted-foreground text-sm mb-6">Crea e gestisci le schede di allenamento personalizzate</p>
-        
-        {/* Pulsanti azioni principali */}
-        <div className="flex gap-3 mb-8">
-          <Button 
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6"
-          >
-            📊 Calcola volume
-          </Button>
-          <Button 
-            variant="outline"
-            className="font-semibold px-6 border-2"
-          >
-            🖨️ Stampa
-          </Button>
-          <Button 
-            variant="outline"
-            onClick={handleOpenSplitDialog}
-            className="font-semibold px-6 border-2"
-          >
-            GESTIONE SPLIT
-          </Button>
-        </div>
-      </header>
-
-      {/* Sezione Informazioni Cliente */}
-      <section className="bg-card border border-border rounded-lg p-6 mb-8">
-        <h2 className="text-xl font-bold text-foreground mb-6">Informazioni Cliente</h2>
-        
-        <div className="grid grid-cols-3 gap-6">
-          {/* Riga 1 */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Cognome</label>
-            <input
-              type="text"
-              className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-              placeholder=""
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Nome</label>
-            <input
-              type="text"
-              className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-              placeholder=""
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Data Inizio</label>
-            <input
-              type="text"
-              className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-              placeholder="gg/mm/aaaa"
-            />
-          </div>
-
-          {/* Riga 2 */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Workout settimanali</label>
+    <div className="min-h-screen bg-background p-6">
+      {/* Header professionale */}
+      <div className="mb-8">
+        {/* Sezione superiore: titolo, dropdown e pulsanti */}
+        <div className="flex items-center gap-6 mb-4">
+          <h1 className="text-5xl font-black text-primary tracking-tight">SPLIT</h1>
+          <div className="flex items-center gap-3 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-md border border-border">
+            <label className="text-sm font-medium text-muted-foreground whitespace-nowrap">W.O. Settimanali</label>
             <select
+              aria-label="W.O. Settimanali"
               value={numDays}
               onChange={(e) => setNumDays(Number(e.target.value))}
-              className="w-full bg-background border border-primary rounded-md px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary cursor-pointer"
+              className="bg-card text-primary font-bold text-lg px-3 py-1.5 rounded-md border border-primary/30 hover:border-primary transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               {Array.from({ length: 7 }, (_, i) => i + 1).map((n) => (
-                <option key={n} value={n}>{n} Workout</option>
+                <option key={n} value={n}>{n}</option>
               ))}
             </select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Durata programmazione</label>
-            <select
-              className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary cursor-pointer"
-            >
-              <option>4 settimane</option>
-              <option>6 settimane</option>
-              <option>8 settimane</option>
-              <option>12 settimane</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Blocco programmazione</label>
-            <input
-              type="text"
-              value={currentSplitName}
-              onChange={(e) => setCurrentSplitName(e.target.value)}
-              className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-              placeholder=""
-            />
-          </div>
-
-          {/* Riga 3 */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Data Fine</label>
-            <input
-              type="text"
-              className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-              placeholder="gg/mm/aaaa"
-            />
-          </div>
         </div>
-      </section>
-
-      {/* Sezione Workout */}
-      <section className="bg-card border border-border rounded-lg p-6 mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-foreground">Workout A</h2>
+        
+        {/* Pulsanti azioni */}
+        <div className="flex gap-2 mb-4">
           <Button 
-            variant="outline"
-            className="font-semibold border-2"
+            size="sm" 
+            onClick={handleReset} 
+            className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
           >
-            Aggiungi esercizio
+            RESET
+          </Button>
+          <Button 
+            size="sm" 
+            onClick={handleOpenSplitDialog} 
+            className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
+          >
+            APRI SPLIT
+          </Button>
+          <Button
+            size="sm"
+            className="h-9 px-4 bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold shadow-md transition-all hover:shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
+            onClick={() => {
+              const key = currentSplitName.trim();
+              if (!key) {
+                toast.error("Nessuno split aperto da salvare. Apri uno split o usa 'SALVA SPLIT'");
+                return;
+              }
+              setIsOverwriteConfirmOpen(true);
+            }}
+            disabled={!currentSplitName}
+            aria-disabled={!currentSplitName}
+          >
+            SALVA MODIFICA
+          </Button>
+          <Button 
+            size="sm" 
+            onClick={handleSaveSplit} 
+            className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
+          >
+            SALVA SPLIT
+          </Button>
+          <Button 
+            size="sm" 
+            variant="destructive" 
+            className="h-9 px-4 font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
+            onClick={() => setIsDeleteDialogOpen(true)}
+          >
+            CANCELLA SPLIT
           </Button>
         </div>
 
-        {/* Grafico Volume - compatto */}
-        {Object.keys(volumeData).length > 0 && (
-          <div className="mb-6">
-            <VolumeBar data={volumeData} numDays={numDays} />
-          </div>
-        )}
-
-        {/* Grid Allenamenti */}
-        <div className="overflow-x-auto">
-          <TrainingGrid
-            exercises={exercises}
-            onAddExercise={handleAddExercise}
-            onDeleteExercise={handleDeleteExercise}
-            onUpdateExercise={handleUpdateExercise}
-            onReset={handleReset}
-            numDays={numDays}
-            notes={notes}
-            onNoteChange={(day, text) => setNotes((prev) => ({ ...prev, [day]: text }))}
-            noScrollContainer
+        {/* Campo nome split allineato dinamicamente con i giorni */}
+        <div className="mb-4">
+          <input
+            value={currentSplitName}
+            onChange={(e) => setCurrentSplitName(e.target.value)}
+            placeholder="NOME SPLIT CORRENTE"
+            style={{ width: `${alignedWidth}px` }}
+            className="bg-card/50 backdrop-blur-sm placeholder:text-muted-foreground text-primary px-4 py-2.5 rounded-md border-2 border-primary/40 hover:border-primary/60 focus:border-primary text-center font-bold uppercase text-xl tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
+            aria-label="Nome split corrente"
           />
         </div>
-      </section>
+      </div>
 
-      {/* Dialogs */}
       <SplitDialog
         open={isSplitDialogOpen}
         onOpenChange={setIsSplitDialogOpen}
@@ -301,11 +241,37 @@ const Index = () => {
         currentNotes={notes}
         currentNumDays={numDays}
       />
+
       <SaveSplitDialog open={isSaveDialogOpen} onOpenChange={setIsSaveDialogOpen} onSave={handleDoSave} />
-      <ResetConfirmDialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen} onConfirm={handleDoReset} />
-      <CenteredAlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen} message={alertMessage} />
-      <DeleteSplitConfirmDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} onConfirm={handleDeleteCurrentSplit} />
-      <ConfirmOverwriteDialog open={isOverwriteConfirmOpen} onOpenChange={setIsOverwriteConfirmOpen} onConfirm={handleConfirmOverwrite} splitName={currentSplitName} />
+  <ResetConfirmDialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen} onConfirm={handleDoReset} />
+        <CenteredAlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen} message={alertMessage} />
+  <DeleteSplitConfirmDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} onConfirm={handleDeleteCurrentSplit} />
+  <ConfirmOverwriteDialog open={isOverwriteConfirmOpen} onOpenChange={setIsOverwriteConfirmOpen} onConfirm={handleConfirmOverwrite} splitName={currentSplitName} />
+
+      {/* Contenuto principale: shared scroll container so VolumeBar and TrainingGrid align */}
+      <div className="flex flex-col gap-4">
+        <div className="mt-6 overflow-x-auto">
+          <div className="inline-block min-w-full">
+            {Object.keys(volumeData).length > 0 && (
+              <div className="mb-6">
+                <VolumeBar data={volumeData} numDays={numDays} />
+              </div>
+            )}
+
+            <TrainingGrid
+              exercises={exercises}
+              onAddExercise={handleAddExercise}
+              onDeleteExercise={handleDeleteExercise}
+              onUpdateExercise={handleUpdateExercise}
+              onReset={handleReset}
+              numDays={numDays}
+              notes={notes}
+              onNoteChange={(day, text) => setNotes((prev) => ({ ...prev, [day]: text }))}
+              noScrollContainer
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
