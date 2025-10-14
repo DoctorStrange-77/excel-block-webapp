@@ -153,7 +153,7 @@ const Index = () => {
     <div className="min-h-screen bg-background p-6">
       {/* Header professionale */}
       <div className="mb-8">
-        {/* Sezione superiore: titolo, dropdown e pulsanti */}
+        {/* Sezione superiore: titolo, dropdown e pulsanti RESET/CANCELLA */}
         <div className="flex items-center gap-6 mb-4">
           <h1 className="text-5xl font-black text-primary tracking-tight">SPLIT</h1>
           <div className="flex items-center gap-3 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-md border border-border">
@@ -169,17 +169,27 @@ const Index = () => {
               ))}
             </select>
           </div>
+          <div className="flex gap-2 flex-1">
+            <Button 
+              size="sm" 
+              onClick={handleReset} 
+              className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
+            >
+              RESET
+            </Button>
+            <Button 
+              size="sm" 
+              variant="destructive" 
+              className="h-9 px-4 font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
+              onClick={() => setIsDeleteDialogOpen(true)}
+            >
+              CANCELLA SPLIT
+            </Button>
+          </div>
         </div>
         
-        {/* Pulsanti azioni */}
+        {/* Altri pulsanti azioni */}
         <div className="flex gap-2 mb-4">
-          <Button 
-            size="sm" 
-            onClick={handleReset} 
-            className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
-          >
-            RESET
-          </Button>
           <Button 
             size="sm" 
             onClick={handleOpenSplitDialog} 
@@ -209,14 +219,6 @@ const Index = () => {
             className="h-9 px-4 bg-primary/90 hover:bg-primary text-primary-foreground font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
           >
             SALVA SPLIT
-          </Button>
-          <Button 
-            size="sm" 
-            variant="destructive" 
-            className="h-9 px-4 font-bold shadow-md transition-all hover:shadow-lg hover:scale-105"
-            onClick={() => setIsDeleteDialogOpen(true)}
-          >
-            CANCELLA SPLIT
           </Button>
         </div>
 
