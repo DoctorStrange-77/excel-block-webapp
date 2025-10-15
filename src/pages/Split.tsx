@@ -11,7 +11,7 @@ import CenteredAlertDialog from "@/components/CenteredAlertDialog";
 import DeleteSplitConfirmDialog from "@/components/DeleteSplitConfirmDialog";
 import ConfirmOverwriteDialog from "@/components/ConfirmOverwriteDialog";
 
-const Index = () => {
+const Split = () => {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [isSplitDialogOpen, setIsSplitDialogOpen] = useState(false);
   const [numDays, setNumDays] = useState<number>(7);
@@ -60,7 +60,6 @@ const Index = () => {
   };
 
   const handleSaveSplit = () => {
-    // open the styled save dialog instead
     setIsSaveDialogOpen(true);
   };
 
@@ -69,9 +68,8 @@ const Index = () => {
   const handleDoSave = (name: string) => {
     const key = name.trim() || `split-${new Date().toISOString()}`;
     try {
-      const stored = JSON.parse(localStorage.getItem("savedSplits" ) || "{}");
+      const stored = JSON.parse(localStorage.getItem("savedSplits") || "{}");
       if (stored[key]) {
-        // show centered dialog instead of toast
         setAlertMessage("Nome split già presente. Inserisci un nome diverso.");
         setIsAlertOpen(true);
         return false;
@@ -111,7 +109,6 @@ const Index = () => {
       localStorage.setItem("savedSplits", JSON.stringify(stored));
       toast.success(`Split cancellato: ${key}`);
       setCurrentSplitName("");
-      // if dialog open, refresh/close
       setIsSplitDialogOpen(false);
       setIsDeleteDialogOpen(false);
     } catch (e) {
@@ -145,15 +142,11 @@ const Index = () => {
     }
   };
 
-  // Calculate dynamic width for aligned elements
-  const gapSize = 8; // 0.5rem = 8px
-  const alignedWidth = numDays * 300 + (numDays - 1) * gapSize;
+  const alignedWidth = numDays * 300 + (numDays - 1) * 8;
 
   return (
     <div className="min-h-screen bg-background p-6">
-      {/* Header professionale */}
       <div className="mb-8">
-        {/* Sezione superiore: titolo, dropdown e tutti i pulsanti */}
         <div className="flex items-center gap-3 mb-4">
           <h1 className="text-5xl font-black text-primary tracking-tight">SPLIT</h1>
           <div className="flex items-center gap-3 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-md border border-border">
@@ -218,7 +211,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Campo nome split allineato dinamicamente con i giorni */}
         <div className="mb-4">
           <input
             value={currentSplitName}
@@ -241,12 +233,11 @@ const Index = () => {
       />
 
       <SaveSplitDialog open={isSaveDialogOpen} onOpenChange={setIsSaveDialogOpen} onSave={handleDoSave} />
-  <ResetConfirmDialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen} onConfirm={handleDoReset} />
-        <CenteredAlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen} message={alertMessage} />
-  <DeleteSplitConfirmDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} onConfirm={handleDeleteCurrentSplit} />
-  <ConfirmOverwriteDialog open={isOverwriteConfirmOpen} onOpenChange={setIsOverwriteConfirmOpen} onConfirm={handleConfirmOverwrite} splitName={currentSplitName} />
+      <ResetConfirmDialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen} onConfirm={handleDoReset} />
+      <CenteredAlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen} message={alertMessage} />
+      <DeleteSplitConfirmDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} onConfirm={handleDeleteCurrentSplit} />
+      <ConfirmOverwriteDialog open={isOverwriteConfirmOpen} onOpenChange={setIsOverwriteConfirmOpen} onConfirm={handleConfirmOverwrite} splitName={currentSplitName} />
 
-      {/* Contenuto principale: shared scroll container so VolumeBar and TrainingGrid align */}
       <div className="flex flex-col gap-4">
         <div className="mt-6 overflow-x-auto">
           <div className="inline-block min-w-full">
@@ -274,4 +265,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Split;
