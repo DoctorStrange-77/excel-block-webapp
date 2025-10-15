@@ -1,8 +1,5 @@
 import { useState } from "react";
 import { Exercise } from "@/types/training";
-import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Dumbbell } from "lucide-react";
 import { VolumeBar } from "@/components/VolumeBar";
 import { TrainingGrid } from "@/components/TrainingGrid";
 import { toast } from "sonner";
@@ -153,18 +150,7 @@ const Index = () => {
   const alignedWidth = numDays * 300 + (numDays - 1) * gapSize;
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen w-full">
-        <AppSidebar />
-        <div className="flex-1 flex flex-col">
-          <header className="h-14 border-b border-border bg-background flex items-center px-4 gap-3">
-            <SidebarTrigger />
-            <div className="flex items-center gap-3">
-              <Dumbbell className="h-6 w-6 text-primary" />
-              <h1 className="text-xl font-black text-primary">THE BUILDER WEB</h1>
-            </div>
-          </header>
-          <main className="flex-1 bg-background p-6">
+    <div className="min-h-screen bg-background p-6">
       {/* Header professionale */}
       <div className="mb-8">
         {/* Sezione superiore: titolo, dropdown e tutti i pulsanti */}
@@ -260,34 +246,31 @@ const Index = () => {
   <DeleteSplitConfirmDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} onConfirm={handleDeleteCurrentSplit} />
   <ConfirmOverwriteDialog open={isOverwriteConfirmOpen} onOpenChange={setIsOverwriteConfirmOpen} onConfirm={handleConfirmOverwrite} splitName={currentSplitName} />
 
-            {/* Contenuto principale: shared scroll container so VolumeBar and TrainingGrid align */}
-            <div className="flex flex-col gap-4">
-              <div className="mt-6 overflow-x-auto">
-                <div className="inline-block min-w-full">
-                  {Object.keys(volumeData).length > 0 && (
-                    <div className="mb-6">
-                      <VolumeBar data={volumeData} numDays={numDays} />
-                    </div>
-                  )}
-
-                  <TrainingGrid
-                    exercises={exercises}
-                    onAddExercise={handleAddExercise}
-                    onDeleteExercise={handleDeleteExercise}
-                    onUpdateExercise={handleUpdateExercise}
-                    onReset={handleReset}
-                    numDays={numDays}
-                    notes={notes}
-                    onNoteChange={(day, text) => setNotes((prev) => ({ ...prev, [day]: text }))}
-                    noScrollContainer
-                  />
-                </div>
+      {/* Contenuto principale: shared scroll container so VolumeBar and TrainingGrid align */}
+      <div className="flex flex-col gap-4">
+        <div className="mt-6 overflow-x-auto">
+          <div className="inline-block min-w-full">
+            {Object.keys(volumeData).length > 0 && (
+              <div className="mb-6">
+                <VolumeBar data={volumeData} numDays={numDays} />
               </div>
-            </div>
-          </main>
+            )}
+
+            <TrainingGrid
+              exercises={exercises}
+              onAddExercise={handleAddExercise}
+              onDeleteExercise={handleDeleteExercise}
+              onUpdateExercise={handleUpdateExercise}
+              onReset={handleReset}
+              numDays={numDays}
+              notes={notes}
+              onNoteChange={(day, text) => setNotes((prev) => ({ ...prev, [day]: text }))}
+              noScrollContainer
+            />
+          </div>
         </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
