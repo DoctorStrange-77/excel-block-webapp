@@ -12,6 +12,11 @@ import Esercizi from "./pages/Esercizi";
 import Distretti from "./pages/Distretti";
 import Dieta from "./pages/Dieta";
 import NotFound from "./pages/NotFound";
+import DietPage from "./pages/dieta/Diet";
+import DietTimingTemplates from "./pages/dieta/TimingTemplates";
+import DietFoodDatabase from "./pages/dieta/FoodDatabase";
+import DietSupplements from "./pages/dieta/Supplements";
+import DietHub from "./pages/dieta/Index";
 
 const queryClient = new QueryClient();
 
@@ -30,10 +35,18 @@ const App = () => (
             <Route path="/esercizi" element={<Esercizi />} />
             <Route path="/distretti" element={<Distretti />} />
             <Route path="/dieta" element={<Dieta />} />
+            <Route path="/dieta/diet" element={<DietPage />} />
+            <Route path="/dieta/timing-templates" element={<DietTimingTemplates />} />
+            <Route path="/dieta/food-database" element={<DietFoodDatabase />} />
+            <Route path="/dieta/supplements" element={<DietSupplements />} />
           </Route>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          <Route path="/dieta" element={<Dieta />} />
+  <Route path="/dieta/diet" element={<DietPage />} />
+  <Route path="/dieta/timing-templates" element={<DietTimingTemplates />} />
+  <Route path="/dieta/food-database" element={<DietFoodDatabase />} />
+  <Route path="/dieta/supplements" element={<DietSupplements />} />
+</Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
